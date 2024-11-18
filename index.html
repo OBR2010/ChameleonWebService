@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAMELEON </title>
+    <link rel="icon" type="image/png" href="assets/Logo3D.png">
+    <style>
+        :root {
+            --primary: #00ff9d;
+            --secondary: #7000ff;
+            --dark: #0a0a0a;
+            --darker: #050505;
+            --accent: #ff006e;
+            --text: #ffffff;
+            --gray: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            cursor: none;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follow {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(0, 255, 157, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, var(--darker) 0%, var(--dark) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .hero-text {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-text h1 {
+            font-size: 5rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: gradientText 8s ease infinite;
+        }
+
+        @keyframes gradientText {
+            0%, 100% {
+                filter: hue-rotate(0deg);
+            }
+            50% {
+                filter: hue-rotate(60deg);
+            }
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            color: #888;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--primary);
+            color: var(--darker);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            height: 600px;
+        }
+
+        .visual-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-cube {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            transform-style: preserve-3d;
+            animation: floating 20s infinite linear;
+        }
+
+        @keyframes floating {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 2px solid var(--primary);
+            background: rgba(0, 255, 157, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .face-front { transform: translateZ(150px); }
+        .face-back { transform: translateZ(-150px) rotateY(180deg); }
+        .face-right { transform: translateX(150px) rotateY(90deg); }
+        .face-left { transform: translateX(-150px) rotateY(-90deg); }
+        .face-top { transform: translateY(-150px) rotateX(90deg); }
+        .face-bottom { transform: translateY(150px) rotateX(-90deg); }
+
+        .portfolio {
+            padding: 8rem 2rem;
+            background: var(--darker);
+        }
+
+        .portfolio-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        .portfolio-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: 0.3s ease;
+        }
+
+        .portfolio-item:hover::before {
+            opacity: 0.8;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .portfolio-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-item:hover .portfolio-content {
+            transform: translateY(0);
+        }
+
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9997;
+            opacity: 0.05;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15) 0px,
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+
+            .hero-visual {
+                height: 400px;
+            }
+
+            .floating-cube {
+                width: 200px;
+                height: 200px;
+            }
+
+            .cube-face {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follow"></div>
+    <div class="glitch-overlay"></div>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">Chameleon</div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#portfolio">Work</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Turning Dreams<br>Into Reality</h1>
+                <p>I create immersive digital experiences that transform brands and captivate audiences. Push the boundaries of what's possible</p>
+                <a href="#contact" class="cta-button">Imagine</a>
+            </div>
+            <div class="hero-visual">
+                <div class="visual-container">
+                    <div class="floating-cube">
+                        <div class="cube-face face-front"></div>
+                        <div class="cube-face face-back"></div>
+                        <div class="cube-face face-right"></div>
+                        <div class="cube-face face-left"></div>
+                        <div class="cube-face face-top"></div>
+                        <div class="cube-face face-bottom"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <img src="assets/SphinxVault.png" alt="Sphinx Vault">
+                <div class="portfolio-content">
+                    <h3>Sphinx Vault</h3>
+                    <p>Interactive Games Platform, Hosting HTML Games with a sleek, modern landing page with JS elements</p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="assets/Translator.png" alt="Translation English <-> Russian">
+                <div class="portfolio-content">
+                    <h3>English <-> Russian Translator</h3>
+                    <p>Simple yet advanced Russian <-> English translation platform using a API and advanced CSS features </p>
+                </div>
+            </div>
+            <div class="portfolio-item">
+                <img src="assets/SphinxChat.png" alt="Sphinx Chat">
+                <div class="portfolio-content">
+                    <h3>Advanced Modern Chat App</h3>
+                    <p>A simple version of discord, a user enters their name and a code for a chatroom, they can chat between other users smoothly with a modern eye catching UI</p>
+                </div>
+            </div>
+        </div>
+    <!-- Previous code remains the same until portfolio section ends -->
+
+    <section class="services" id="services">
+        <div class="services-container">
+            <div class="services-header">
+                <h2>My Services</h2>
+                <div class="services-line"></div>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 4H4v16h16V4z"></path>
+                            <path d="M4 8h16"></path>
+                            <path d="M8 4v16"></path>
+                        </svg>
+                    </div>
+                    <h3>Web Development</h3>
+                    <p>Custom websites built from scratch</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Web Design</h3>
+                    <p>Modern, responsive designs</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <h3>Maintenance</h3>
+                    <p>Ongoing support and updates</p>
+                </div>
+            </div>
+            <div class="contact-card">
+                <div class="contact-content">
+                    <h3>Ready to start your project?</h3>
+                    <p>Reach out to discuss your next web development project</p>
+                    <a href="mailto:owenrenshawtognazzini@gmail.com" class="email-button">
+                        <span class="email-text">owenrenshawtognazzini@gmail.com</span>
+                        <span class="email-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <path d="M22 6l-10 7L2 6"></path>
+                            </svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add this CSS to the existing styles -->
+    <style>
+        .services {
+            padding: 8rem 2rem;
+            background: var(--darker);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .services-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .services-header h2 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .services-line {
+            width: 100px;
+            height: 3px;
+            background: var(--primary);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .services-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+        }
+
+        .services-header:hover .services-line::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+        }
+
+        .service-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .service-icon {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .service-card p {
+            color: #888;
+            position: relative;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            opacity: 0.1;
+            transition: 0.3s ease;
+        }
+
+        .contact-card:hover::before {
+            opacity: 0.15;
+        }
+
+        .contact-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-card h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card p {
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        .email-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: var(--darker);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .email-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 157, 0.3);
+        }
+
+        .email-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .services-header h2 {
+                font-size: 2rem;
+            }
+
+            .contact-card {
+                padding: 2rem 1rem;
+            }
+
+            .contact-card h3 {
+                font-size: 1.5rem;
+            }
+
+            .email-button {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+
+    <!-- Add this JavaScript to the existing scripts -->
+    <script>
+        // Service cards hover effect
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Observe services section for scroll animations
+        const servicesObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.service-card, .contact-card').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(30px)';
+            item.style.transition = 'all 0.6s cubic-bezier(0.17, 0.55, 0.55, 1)';
+            servicesObserver.observe(item);
+        });
+    </script>
+
+<!-- Rest of the previous code remains the same -->
+
+    <script>
+        // Custom cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollow = document.querySelector('.cursor-follow');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
+            cursorFollow.style.transform = `translate(${e.clientX - 50}px, ${e.clientY - 50}px)`;
+        });
+
+        // Hover effect for interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .portfolio-item');
+        
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform += ' scale(1.5)';
+                cursorFollow.style.transform += ' scale(0.5)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = cursor.style.transform.replace(' scale(1.5)', '');
+                cursorFollow.style.transform = cursorFollow.style.transform.replace(' scale(0.5)', '');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.padding = '1rem 2rem';
+                navbar.style.background = 'rgba(5, 5, 5, 0.98)';
+            } else {
+                navbar.style.padding = '1.5rem 2rem';
+                navbar.style.background = 'rgba(5, 5, 5, 0.95)';
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Parallax effect for hero section
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            
+            document.querySelector('.hero-visual').style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+// Continue from previous JavaScript
+entries.forEach(entry => {
+    if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0) scale(1)';
+    }
+});
+}, observerOptions);
+
+document.querySelectorAll('.portfolio-item').forEach(item => {
+item.style.opacity = '0';
+item.style.transform = 'translateY(50px) scale(0.95)';
+item.style.transition = 'all 0.8s cubic-bezier(0.17, 0.55, 0.55, 1)';
+observer.observe(item);
+});
+
+// Add glitch effect
+function createGlitchEffect() {
+const text = document.querySelector('.logo');
+let interval;
+
+text.addEventListener('mouseenter', () => {
+    let iterations = 0;
+    clearInterval(interval);
+
+    interval = setInterval(() => {
+        text.style.transform = `translate(${Math.random() * 3}px, ${Math.random() * 3}px)`;
+        
+        if (iterations > 30) {
+            clearInterval(interval);
+            text.style.transform = 'none';
+        }
+        iterations++;
+    }, 30);
+});
+
+text.addEventListener('mouseleave', () => {
+    clearInterval(interval);
+    text.style.transform = 'none';
+});
+}
+
+createGlitchEffect();
+
+// Add dynamic background particles
+function createParticles() {
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+canvas.style.position = 'fixed';
+canvas.style.top = '0';
+canvas.style.left = '0';
+canvas.style.width = '100%';
+canvas.style.height = '100%';
+canvas.style.zIndex = '-1';
+canvas.style.pointerEvents = 'none';
+document.body.appendChild(canvas);
+
+let particles = [];
+const particleCount = 50;
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resize);
+resize();
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.5;
+    }
+
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x > canvas.width) this.x = 0;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.y > canvas.height) this.y = 0;
+        if (this.y < 0) this.y = canvas.height;
+    }
+
+    draw() {
+        ctx.fillStyle = `rgba(0, 255, 157, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function createParticleArray() {
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+    });
+
+    requestAnimationFrame(animate);
+}
+
+createParticleArray();
+animate();
+}
+
+createParticles();
+
+// Add magnetic effect to CTA button
+function createMagneticEffect() {
+const button = document.querySelector('.cta-button');
+const strength = 50;
+
+button.addEventListener('mousemove', (e) => {
+    const rect = button.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    button.style.transform = `translate(${x/strength}px, ${y/strength}px)`;
+});
+
+button.addEventListener('mouseleave', () => {
+    button.style.transform = 'translate(0px, 0px)';
+});
+}
+
+createMagneticEffect();
+
+// Add scroll progress indicator
+function createScrollProgress() {
+const progress = document.createElement('div');
+progress.style.position = 'fixed';
+progress.style.top = '0';
+progress.style.left = '0';
+progress.style.width = '0%';
+progress.style.height = '2px';
+progress.style.backgroundColor = 'var(--primary)';
+progress.style.zIndex = '1001';
+progress.style.transition = 'width 0.1s ease';
+document.body.appendChild(progress);
+
+window.addEventListener('scroll', () => {
+    const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
+    progress.style.width = `${scrolled}%`;
+});
+}
+
+createScrollProgress();
+</script>
+</body>
+</html>
